@@ -4,6 +4,8 @@ import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.entity.Endereco;
 import com.example.crm_service.entity.TipoDocumento;
 
+import java.util.UUID;
+
 public record InformarClienteDto(
         String id,
         String nome,
