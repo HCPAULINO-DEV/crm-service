@@ -4,6 +4,8 @@ import com.example.crm_service.dto.CadastrarClienteDto;
 import com.example.crm_service.dto.InformarClienteDto;
 import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.entity.Status;
+import com.example.crm_service.infra.exception.ClienteNaoEncontradoExcpetion;
+import com.example.crm_service.infra.exception.DeletarClienteAtivoException;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +42,7 @@ public class ClienteService {
     public void deletar(UUID id){
         Cliente cliente = buscarCliente(id);
         if (cliente.getStatus().equals(Status.ATIVO)){
-            throw new RuntimeException("Para deletar um cliente ele deve conter o status de INATIVO!");
+            throw new DeletarClienteAtivoException("Para deletar um cliente ele deve conter o status de INATIVO!");
         }
         clienteRepository.delete(cliente);
     }
@@ -53,6 +55,6 @@ public class ClienteService {
 
     private Cliente buscarCliente(UUID id){
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não foi encontrado!"));
+                .orElseThrow(() -> new ClienteNaoEncontradoExcpetion("Cliente não foi encontrado!"));
     }
 }
