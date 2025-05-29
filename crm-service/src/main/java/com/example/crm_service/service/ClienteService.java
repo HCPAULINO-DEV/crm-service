@@ -6,6 +6,8 @@ import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.entity.Status;
 import com.example.crm_service.infra.exception.ClienteNaoEncontradoExcpetion;
 import com.example.crm_service.infra.exception.DeletarClienteAtivoException;
+import com.example.crm_service.infra.exception.EmailExistenteException;
+import com.example.crm_service.infra.exception.NomeOuRazaoSocialExistenteException;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +26,13 @@ public class ClienteService {
 
     public InformarClienteDto salvar(CadastrarClienteDto dto) {
         if (clienteRepository.existsByDocumento(dto.documento())){
-            throw new RuntimeException("ERRO: Documento já existente");
+            throw new DocumentoExistenteException("ERRO: Documento já existente");
         }
         if (clienteRepository.existsByEmail(dto.email())){
-            throw new RuntimeException("ERRO: Email já existente");
+            throw new EmailExistenteException("ERRO: Email já existente");
         }
         if (clienteRepository.existsByNome(dto.nome())){
-            throw new RuntimeException("ERRO: Nome ou Razão Social já existente");
+            throw new NomeOuRazaoSocialExistenteException("ERRO: Nome ou Razão Social já existente");
         }
         Cliente cliente = new Cliente(dto);
         cliente.setStatus(Status.ATIVO);

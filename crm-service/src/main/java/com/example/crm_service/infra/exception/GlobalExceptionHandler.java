@@ -34,7 +34,43 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
 
-    public record ErrorResponseDTO(
+    @ExceptionHandler(NomeOuRazaoSocialExistenteException.class)
+    public ResponseEntity<ErrorResponseDTO> handlerNomeOuRazaoSocialExistente(NomeOuRazaoSocialExistenteException ex){
+        var erro = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.name(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    @ExceptionHandler(EmailExistenteException.class)
+    public ResponseEntity<ErrorResponseDTO> handlerEmailExistente(EmailExistenteException ex){
+        var erro = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.name(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    @ExceptionHandler(DocumentoExistenteException.class)
+    public ResponseEntity<ErrorResponseDTO> handlerDocumentoExistente(DocumentoExistenteException ex){
+        var erro = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.name(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    private record ErrorResponseDTO(
             int status_code,
             String status,
             String message,
