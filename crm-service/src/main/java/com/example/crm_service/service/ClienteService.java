@@ -4,6 +4,8 @@ import com.example.crm_service.dto.CadastrarClienteDto;
 import com.example.crm_service.dto.InformarClienteDto;
 import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.repository.ClienteRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -38,8 +40,14 @@ public class ClienteService {
         clienteRepository.delete(cliente);
     }
 
+    public Page<InformarClienteDto> buscarClientes(Pageable pageable){
+        Page<Cliente> page = clienteRepository.findAll(pageable);
+
+        return page.map(InformarClienteDto::new);
+    }
+
     private Cliente buscarCliente(UUID id){
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não foi encontrado!"))
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não foi encontrado!"));
     }
 }
