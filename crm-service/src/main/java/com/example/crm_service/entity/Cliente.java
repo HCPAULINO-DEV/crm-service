@@ -30,6 +30,8 @@ public class Cliente {
     @Embedded
     private Endereco endereco;
 
+    private Status status;
+
     public Cliente(CadastrarClienteDto dto){
         this.nome = dto.nome();
         this.tipoDocumento = dto.tipoDocumento();

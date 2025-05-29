@@ -3,6 +3,7 @@ package com.example.crm_service.service;
 import com.example.crm_service.dto.CadastrarClienteDto;
 import com.example.crm_service.dto.InformarClienteDto;
 import com.example.crm_service.entity.Cliente;
+import com.example.crm_service.entity.Status;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class ClienteService {
             throw new RuntimeException("ERRO: Nome ou Razão Social já existente");
         }
         Cliente cliente = new Cliente(dto);
+        cliente.setStatus(Status.ATIVO);
         clienteRepository.save(cliente);
 
         return new InformarClienteDto(cliente);
@@ -37,6 +39,9 @@ public class ClienteService {
 
     public void deletar(UUID id){
         Cliente cliente = buscarCliente(id);
+        if (cliente.getStatus().equals(Status.ATIVO)){
+            throw new RuntimeException("Para deletar um cliente ele deve conter o status de INATIVO!");
+        }
         clienteRepository.delete(cliente);
     }
 

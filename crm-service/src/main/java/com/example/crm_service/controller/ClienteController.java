@@ -45,6 +45,5 @@ public class ClienteController {
         var clientes = clienteService.buscarClientes(pageable);
 
         return ResponseEntity.ok(clientes);
-
     }
 }
