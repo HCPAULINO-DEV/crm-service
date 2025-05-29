@@ -6,6 +6,8 @@ import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class ClienteService {
 
@@ -29,5 +31,15 @@ public class ClienteService {
         clienteRepository.save(cliente);
 
         return new InformarClienteDto(cliente);
+    }
+
+    public void deletar(UUID id){
+        Cliente cliente = buscarCliente(id);
+        clienteRepository.delete(cliente);
+    }
+
+    private Cliente buscarCliente(UUID id){
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não foi encontrado!"))
     }
 }
