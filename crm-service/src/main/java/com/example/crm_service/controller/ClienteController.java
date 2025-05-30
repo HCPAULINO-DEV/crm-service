@@ -1,11 +1,10 @@
 package com.example.crm_service.controller;
 
+import com.example.crm_service.dto.AtualizarClienteDto;
 import com.example.crm_service.dto.CadastrarClienteDto;
 import com.example.crm_service.dto.InformarClienteDto;
 import com.example.crm_service.service.ClienteService;
 import jakarta.validation.Valid;
-import lombok.Getter;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -45,5 +44,12 @@ public class ClienteController {
         var clientes = clienteService.buscarClientes(pageable);
 
         return ResponseEntity.ok(clientes);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity atualizar(@PathVariable UUID id, @Valid @RequestBody AtualizarClienteDto dto){
+        var cliente = clienteService.atualizar(id, dto);
+
+        return ResponseEntity.ok(cliente);
     }
 }
