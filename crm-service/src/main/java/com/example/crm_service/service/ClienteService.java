@@ -6,20 +6,24 @@ import com.example.crm_service.dto.InformarClienteDto;
 import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.entity.Status;
 import com.example.crm_service.infra.exception.*;
+import com.example.crm_service.infra.validation.ValidadorCadastroCliente;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final List<ValidadorCadastroCliente> validadoresCadastro;
 
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository, List<ValidadorCadastroCliente> validadoresCadastro) {
         this.clienteRepository = clienteRepository;
+        this.validadoresCadastro = validadoresCadastro;
     }
 
     private Cliente buscarCliente(UUID id){
@@ -28,15 +32,7 @@ public class ClienteService {
     }
 
     public InformarClienteDto salvar(CadastrarClienteDto dto) {
-        if (clienteRepository.existsByDocumento(dto.documento())){
-            throw new DocumentoExistenteException("ERRO: Documento já existente");
-        }
-        if (clienteRepository.existsByEmail(dto.email())){
-            throw new EmailExistenteException("ERRO: Email já existente");
-        }
-        if (clienteRepository.existsByNome(dto.nome())){
-            throw new NomeOuRazaoSocialExistenteException("ERRO: Nome ou Razão Social já existente");
-        }
+        validadoresCadastro.forEach(v -> v.validar(dto));
         Cliente cliente = new Cliente(dto);
         cliente.setStatus(Status.ATIVO);
         clienteRepository.save(cliente);
