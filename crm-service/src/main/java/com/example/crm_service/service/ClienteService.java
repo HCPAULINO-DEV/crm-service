@@ -7,6 +7,7 @@ import com.example.crm_service.entity.Cliente;
 import com.example.crm_service.entity.Status;
 import com.example.crm_service.infra.exception.*;
 import com.example.crm_service.infra.validation.ValidadorCadastroCliente;
+import com.example.crm_service.infra.validation.ValidadorDeleteCliente;
 import com.example.crm_service.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +21,12 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final List<ValidadorCadastroCliente> validadoresCadastro;
+    private final List<ValidadorDeleteCliente> validadoresDelete;
 
-    public ClienteService(ClienteRepository clienteRepository, List<ValidadorCadastroCliente> validadoresCadastro) {
+    public ClienteService(ClienteRepository clienteRepository, List<ValidadorCadastroCliente> validadoresCadastro, List<ValidadorDeleteCliente> validadoresDelete) {
         this.clienteRepository = clienteRepository;
         this.validadoresCadastro = validadoresCadastro;
+        this.validadoresDelete = validadoresDelete;
     }
 
     private Cliente buscarCliente(UUID id){
@@ -41,10 +44,8 @@ public class ClienteService {
     }
 
     public void deletar(UUID id){
+        validadoresDelete.forEach(v -> v.validar(id));
         Cliente cliente = buscarCliente(id);
-        if (cliente.getStatus().equals(Status.ATIVO)){
-            throw new DeletarClienteAtivoException("Para deletar um cliente ele deve conter o status de INATIVO!");
-        }
         clienteRepository.delete(cliente);
     }
 
